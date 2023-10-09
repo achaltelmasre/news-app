@@ -17,3 +17,8 @@
 .article-title{
     font-size: 22px;
 }
+.article-info{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
