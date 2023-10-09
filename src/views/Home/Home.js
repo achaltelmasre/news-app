@@ -5,35 +5,60 @@ import "./Home.css"
 
 function Home() {
     const [news, setNews] = useState([])
+    const [searchQuery, setSearchQuery] = useState("pune")
 
     const loadNews = async () =>{
-       const response = await axios.get("https://newsapi.org/v2/everything?q=pune&from=2023-09-08&sortBy=popularity&apiKey=dd28cfa9cf73406dbe95670f718ca641");
+        try{
+            const response = await axios.get(`https://newsapi.org/v2/everything?q=${searchQuery}&from=2023-10-08&sortBy=popularity&apiKey=${process.env.REACT_APP_API_KEY}`);
 
-       setNews(response.data.articles)
+            setNews(response.data.articles)
+        }
+        catch(error){
+            console.error();
+        }
     }
 
     useEffect(() => {
       loadNews()
     }, [])
 
+    useEffect(() => {
+       loadNews()
+    }, [searchQuery])
+
     return (
         <div>
             <h1>News App</h1>
+             
+            <input
+               type='text'
+               className='search-input'
+               value={searchQuery}
+               onChange={(e) =>{
+                 setSearchQuery(e.target.value)
+               }}
+             />
 
-            {
+          <div className='news-container'>
+          {
                 news.map((newsArticle, index) =>{
                     const {author, title, description, url, urlToImage, publishedAt, content} = newsArticle;
 
                     return (
                        <NewsArticle 
-                       urlToImage={urlToImage} 
-                       title={title}
                        author={author}
-                       />
-                      
+                       title={title}
+                       description={description}
+                       url={url}
+                       urlToImage={urlToImage} 
+                       publishedAt={publishedAt}
+                       content={content}
+                       key={index}
+                       />  
                     )
                 })
             }
+          </div>
 
         </div>
     )
